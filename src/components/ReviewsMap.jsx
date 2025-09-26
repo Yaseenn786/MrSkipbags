@@ -5,7 +5,7 @@ import truckIcon from "../assets/truck.png";
 
 const pins = [
   { city: "Dublin", x: 400, y: 120, review: "Michael: These guys have a very quick and easy service – brilliant" },
-  { city: "Galway", x: 180, y: 200, review: "Sarah: What’s great is you can get these skip bags into places normal skips can’t go. Anyone can use it" },
+  { city: "Galway", x: 180, y: 200, review: "Sarah: What’s great is you can get get these skip bags into places normal skips can’t go. Anyone can use it" },
   { city: "Limerick", x: 250, y: 320, review: "John: Filled one day, collected the next with no mess left – really happy with this" },
   { city: "Waterford", x: 380, y: 350, review: "Emma: Mr skip bags couldn’t be easier to organise and you can get a LOT into those bags. Highly recommended." },
 ];
