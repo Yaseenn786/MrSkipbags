@@ -1,4 +1,4 @@
-import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaWhatsapp, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -30,46 +30,56 @@ export default function Footer() {
             <li><a href="#contact" className="hover:text-green-400 transition">Contact</a></li>
             <li><a href="#about" className="hover:text-green-400 transition">About Us</a></li>
           </ul>
+        </div>
 
-          {/* Social Media */}
-          <div className="flex space-x-4">
+        {/* Right Column: Social Media */}
+        <div>
+          <h3 className="text-xl font-semibold text-white mb-4">Follow Us</h3>
+          <p className="text-gray-400 mb-6">
+            Stay connected for updates and offers
+          </p>
+          
+          {/* Social Media Icons */}
+          <div className="flex space-x-4 mb-6">
             <a
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition transform hover:scale-110"
+              title="Facebook"
             >
-              <FaFacebookF className="text-white" />
+              <FaFacebookF className="text-white text-lg" />
             </a>
             <a
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition transform hover:scale-110"
+              title="Instagram"
             >
-              <FaInstagram className="text-white" />
+              <FaInstagram className="text-white text-lg" />
             </a>
             <a
               href="https://wa.me/35312345678"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition transform hover:scale-110"
+              title="WhatsApp"
             >
-              <FaWhatsapp className="text-white" />
+              <FaWhatsapp className="text-white text-lg" />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-green-600 transition transform hover:scale-110"
+              title="Twitter"
+            >
+              <FaTwitter className="text-white text-lg" />
             </a>
           </div>
-        </div>
 
-        {/* Right Column: Service Area & Trust */}
-        <div>
-          <h3 className="text-xl font-semibold text-white mb-4">We Serve</h3>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">Dublin</span>
-            <span className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">Galway</span>
-            <span className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">Limerick</span>
-            <span className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">Waterford</span>
-          </div>
-          <p className="text-green-400 font-semibold">✅ Licensed & Insured</p>
+          
         </div>
       </div>
 

@@ -1,94 +1,92 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import irelandMap from "../assets/ie.svg";
-import truckIcon from "../assets/truck.png";
-
-const pins = [
-  { city: "Dublin", x: 400, y: 120, review: "Michael: These guys have a very quick and easy service – brilliant" },
-  { city: "Galway", x: 180, y: 200, review: "Sarah: What’s great is you can get get these skip bags into places normal skips can’t go. Anyone can use it" },
-  { city: "Limerick", x: 250, y: 320, review: "John: Filled one day, collected the next with no mess left – really happy with this" },
-  { city: "Waterford", x: 380, y: 350, review: "Emma: Mr skip bags couldn’t be easier to organise and you can get a LOT into those bags. Highly recommended." },
-];
+import { useState } from "react";
 
 export default function ReviewsMap() {
-  const [activePin, setActivePin] = useState(0);
-  const [showReview, setShowReview] = useState(false);
+  const reviews = [
+    {
+      text: "Lucan Dental Care are delighted with the efficiency and professionalism of KeyGreen. All our encounters with them have been nothing but pleasant which has made this transition effortless. They have always been very obliging and punctual when responding to our requests and we look forward to a long-lasting relationship.",
+      author: "Dr Jerry Daly",
+      company: "Lucan Dental Care"
+    },
+    {
+      text: "Cosgrave Developments have been working with KeyGreen for over ten years, in this time we have always received an excellent level of service. Our business is consistently evolving, and we require sustainable waste management to ensure regulatory compliance and quick turnaround times on our busy sites.",
+      author: "Teresa O'Brien",
+      company: "Cosgrave Developments"
+    },
+    {
+      text: "Mr Skip Bags has been instrumental in helping us manage construction waste across multiple sites. Their reliable collection service and eco-friendly approach makes them our preferred waste management partner.",
+      author: "Michael Reynolds",
+      company: "Reynolds Construction Ltd"
+    },
+    {
+      text: "The convenience of their skip bag service is unmatched. Perfect for small to medium projects where traditional skips won't fit. Professional, punctual, and environmentally conscious.",
+      author: "Sarah Chen",
+      company: "Urban Property Management"
+    }
+  ];
 
-  useEffect(() => {
-    let timer;
+  const [currentReview, setCurrentReview] = useState(0);
 
-    const runAnimation = () => {
-      setShowReview(false); // hide review when moving
+  const nextReview = () => {
+    setCurrentReview((prev) => (prev + 1) % reviews.length);
+  };
 
-      // show review after truck arrives
-      timer = setTimeout(() => {
-        setShowReview(true);
-
-        // move to next pin after 3s
-        timer = setTimeout(() => {
-          setActivePin((prev) => (prev + 1) % pins.length);
-          runAnimation();
-        }, 3000);
-      }, 1500);
-    };
-
-    runAnimation();
-    return () => clearTimeout(timer);
-  }, []);
+  const prevReview = () => {
+    setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length);
+  };
 
   return (
-    <section className="py-16 bg-gray-50">
-      <h2 className="text-3xl font-bold text-center text-brandGrey mb-8">
-        Happiness Rolling Across Ireland
-      </h2>
+    <section className="bg-white py-20 px-6">
+      <div className="container mx-auto max-w-4xl">
+        {/* Section Title */}
+        <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-800 mb-16">
+          What Our Clients Say
+        </h2>
 
-      <div className="relative max-w-[600px] mx-auto">
-        {/* Map */}
-        <img
-          src={irelandMap}
-          alt="Ireland Map"
-          className="w-full rounded-xl shadow-lg"
-        />
-
-        {/* Pins */}
-        {pins.map((pin, idx) => (
-          <div
-            key={idx}
-            className={`absolute w-5 h-5 rounded-full ${
-              idx === activePin ? "bg-green-500" : "bg-green-300"
-            }`}
-            style={{ top: pin.y, left: pin.x }}
-          >
-            {/* Review Card */}
-            {idx === activePin && showReview && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: -20 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="absolute left-8 bg-white shadow-xl rounded-lg p-4 w-72 border-l-4 border-green-500"
-              >
-                <h3 className="font-bold text-green-600">{pin.city}</h3>
-                <p className="text-gray-700 italic mt-2">“{pin.review}”</p>
-                <div className="flex mt-3 text-yellow-500">
-                  {"⭐".repeat(5)}
-                </div>
-              </motion.div>
-            )}
+        {/* Review Card */}
+        <div className="bg-gray-50 rounded-2xl p-12 border border-gray-200 relative">
+          {/* Review Text */}
+          <p className="text-gray-700 text-xl leading-relaxed mb-8 text-center italic">
+            "{reviews[currentReview].text}"
+          </p>
+          
+          {/* Author Info */}
+          <div className="text-center border-t border-gray-300 pt-8">
+            <p className="font-bold text-gray-900 text-2xl">
+              {reviews[currentReview].author}
+            </p>
+            <p className="text-green-600 font-semibold text-lg mt-2">
+              {reviews[currentReview].company}
+            </p>
           </div>
-        ))}
 
-        {/* Truck */}
-        <motion.img
-          src={truckIcon}
-          alt="Truck"
-          className="absolute w-10"
-          animate={{
-            top: pins[activePin].y,
-            left: pins[activePin].x - 30,
-          }}
-          transition={{ duration: 1.5 }}
-        />
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prevReview}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors shadow-lg"
+          >
+            ‹
+          </button>
+          
+          <button 
+            onClick={nextReview}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-green-700 transition-colors shadow-lg"
+          >
+            ›
+          </button>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center mt-8 space-x-2">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentReview(index)}
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  index === currentReview ? 'bg-green-600' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

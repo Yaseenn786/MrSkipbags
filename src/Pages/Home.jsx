@@ -1,64 +1,43 @@
 import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
-import wastePile from "../assets/1.png";
 import FocusSection from "../components/FocusSection";
+import HowItWorks from "../components/HowItWorks";
+import Collection from "../components/CollectionArea";
+import FAQ from "../components/FAQSection";
 import ReviewsMap from "../components/ReviewsMap";
 import TalkToUs from "../components/TalkToUs";
-import recycledProduct from "../assets/images.webp";
+import truck from "../assets/back.png";
 
 export default function Home() {
   return (
     <main className="bg-gray-50">
-      <section className="relative py-24 px-6 container mx-auto flex flex-col items-center gap-16">
-        
-        {/* Headline */}
-        <div className="text-center max-w-2xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 mb-6 leading-tight">
-            <span className="text-green-600">From Waste to Wonder.</span> <br />
-            In Just One Click.
-          </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            We don’t just collect trash; we transform it into something valuable.  
-            Drag to see the transformation 🌱
-          </p>
-          <a
-            href="#booking"
-            className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold shadow-md hover:scale-105 transition animate-pulse"
-          >
-            Start Your Transformation
-          </a>
-        </div>
-
-        {/* Interactive Before/After Slider */}
-        <div className="w-full md:w-3/4 lg:w-2/3">
-          <ReactCompareSlider
-            itemOne={<ReactCompareSliderImage src={wastePile} alt="Landfill Waste" />}
-            itemTwo={<ReactCompareSliderImage src={recycledProduct} alt="Beautiful Park" />}
-            handle={
-              <div className="flex items-center justify-center w-10 h-10 bg-green-600 rounded-full shadow-md cursor-grab">
-                🍃
-              </div>
-            }
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={truck} 
+            alt="Mr Skip Bags Professional Collection Service"
+            className="w-full h-full object-cover"
           />
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/30"></div>
         </div>
 
-        {/* Transformation Icons */}
-        <div className="flex justify-center gap-6 mt-6 text-3xl">
-          <span className="text-green-500">🗑️ ✓</span>
-          <span className="text-green-500">🚚 ✓</span>
-          <span className="text-green-500">⚙️ ✓</span>
-          <span className="animate-pulse text-green-600">🌳</span>
+        {/* Price Sticker */}
+        <div className="absolute top-32 left-72 z-20 bg-white rounded-2xl shadow-2xl px-8 py-6 border-2 border-green-500 transform scale-125">
+          <div className="text-center">
+            <div className="text-lg text-gray-600 font-semibold">FROM ONLY</div>
+            <div className="text-5xl font-bold text-green-600">£89</div>
+            <div className="text-sm text-gray-500 font-medium">FOR COLLECTION</div>
+          </div>
         </div>
 
-        {/* Final Reveal */}
-        <p className="mt-6 text-center text-lg font-semibold text-green-600 animate-fadeIn">
-          Recycled into new products
-        </p>
+        
       </section>
 
-      <FocusSection />
-
+      <HowItWorks />
+      <Collection />
       <ReviewsMap /> 
-
+      <FAQ />
       <TalkToUs />
     </main>
   );
