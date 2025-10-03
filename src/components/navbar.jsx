@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Link as ScrollLink } from "react-scroll";
 import { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
@@ -44,16 +45,14 @@ export default function Navbar() {
 
         {/* Navigation - gets smaller */}
         <nav className="flex items-center space-x-1">
-          <ScrollLink
-            to="about"
-            smooth={true}
-            duration={600}
+        <Link
+            to="/about-us"
             className={`text-green-50 font-semibold cursor-pointer rounded-xl transition-all duration-300 hover:bg-green-700/40 hover:shadow-lg hover:shadow-green-500/20 ${
               isScrolled ? 'px-3 py-2 text-sm' : 'px-4 py-3 text-base'
             }`}
           >
             About Us
-          </ScrollLink>
+          </Link>
 
           <div className={`bg-gradient-to-b from-transparent via-green-400/50 to-transparent transition-all duration-300 ${
             isScrolled ? 'h-4' : 'h-6'
@@ -88,14 +87,14 @@ export default function Navbar() {
                 <div className="font-bold text-green-800">Our Services</div>
                 <div className="text-xs text-green-600">Professional waste solutions</div>
               </div>
-              <a href="#skip-hire" className="block px-5 py-4 hover:bg-green-50 transition-all duration-200 flex items-center space-x-3 group/item">
+              <a href="/skip-hire" className="block px-5 py-4 hover:bg-green-50 transition-all duration-200 flex items-center space-x-3 group/item">
                 <span className="text-xl group-hover/item:scale-110 transition-transform">🪣</span>
                 <div>
                   <div className="font-semibold text-green-900">Skip Hire</div>
-                  <div className="text-xs text-green-600">Various sizes available</div>
+                  <div className="text-xs text-green-600">Coming Soon</div>
                 </div>
               </a>
-              <a href="#skip-collection" className="block px-5 py-4 hover:bg-green-50 transition-all duration-200 flex items-center space-x-3 group/item rounded-b-2xl">
+              <a href="/Area" className="block px-5 py-4 hover:bg-green-50 transition-all duration-200 flex items-center space-x-3 group/item rounded-b-2xl">
                 <span className="text-xl group-hover/item:scale-110 transition-transform">🚛</span>
                 <div>
                   <div className="font-semibold text-green-900">Skip Collection</div>

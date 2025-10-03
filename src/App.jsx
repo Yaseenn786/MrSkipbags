@@ -1,14 +1,23 @@
+import { Routes, Route } from 'react-router-dom';
 import Navbar from "./components/navbar";
 import Home from "./Pages/Home";
-
+import About from "./Pages/AboutUs"
+import Area from "./Pages/SelectArea"
+import Form from "./Pages/CollectionForm"
+import SkipHire from "./Pages/SkipHire";
 import Footer from "./components/Footer";
 
 function App() {
   return (
     <div>
       <Navbar />
-      <Home />
-      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/skip-hire" element={<SkipHire />} />
+        <Route path="/About-us" element={<About />} /> 
+        <Route path="/Area" element={<Area />} />
+        <Route path="/Form" element={<Form />} />
+      </Routes>
       <Footer />
     </div>
   );
