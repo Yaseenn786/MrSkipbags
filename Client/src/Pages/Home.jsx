@@ -26,7 +26,7 @@ export default function Home() {
         <div className="absolute top-32 left-72 z-20 bg-white rounded-2xl shadow-2xl px-8 py-6 border-2 border-green-500 transform scale-125">
           <div className="text-center">
             <div className="text-lg text-gray-600 font-semibold">FROM ONLY</div>
-            <div className="text-5xl font-bold text-green-600">£89</div>
+            <div className="text-5xl font-bold text-green-600">€89</div>
             <div className="text-sm text-gray-500 font-medium">FOR COLLECTION</div>
           </div>
         </div>
