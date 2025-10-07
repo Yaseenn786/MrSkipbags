@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function CollectionForm() {
   const [formData, setFormData] = useState({
@@ -12,19 +14,43 @@ export default function CollectionForm() {
     notes: "",
     bagType: "Midi Bag Collection",
     qty: 1,
+    price: 99.0,
   });
-
+   
+  const navigate = useNavigate();
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Enquiry Submitted:", formData);
-    alert("Thank you! We have received your enquiry and will contact you soon.");
+  
+    console.log("📤 Submitting data:", formData);
+    try {
+      const res = await fetch("http://localhost:3001/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      console.log("📨 Response status:", res.status);
+      const data = await res.json();
+      console.log("📨 Response data:", data);
+      if (res.ok) {
+        navigate("/success");
+        console.log("Server response:", data);
+      } else {
+        alert("❌ Failed to send enquiry. Please try again.");
+        console.error("Error:", data);
+      }
+    } catch (err) {
+      console.error("Request failed:", err);
+      alert("⚠️ Could not connect to server.");
+    }
   };
-
+   
+  const total = (formData.price * formData.qty).toFixed(2);
   return (
     <section className="min-h-[80vh] bg-gray-50 py-12 px-4">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -124,16 +150,30 @@ export default function CollectionForm() {
           <p className="text-sm text-gray-600 mb-4">
             Delivery to selected area (collection within 5 working days).
           </p>
-          <div className="flex items-center justify-between">
-            <span>Qty:</span>
-            <input
-              type="number"
-              min="1"
-              name="qty"
-              value={formData.qty}
-              onChange={handleChange}
-              className="w-16 border rounded-md p-1 text-center"
-            />
+
+          {/* Price Table */}
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span>Skip</span>
+              <span>€ {formData.price.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span>Qty:</span>
+              <input
+                type="number"
+                min="1"
+                name="qty"
+                value={formData.qty}
+                onChange={handleChange}
+                className="w-16 border rounded-md p-1 text-center"
+              />
+            </div>
+
+            <div className="flex justify-between font-semibold border-t pt-2">
+              <span>Total inc. VAT</span>
+              <span>€ {total}</span>
+            </div>
           </div>
         </div>
       </div>
