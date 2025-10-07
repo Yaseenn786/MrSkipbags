@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function CollectionForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     address1: "",
@@ -16,54 +17,67 @@ export default function CollectionForm() {
     qty: 1,
     price: 99.0,
   });
-   
-  const navigate = useNavigate();
-  
+
+  // ✅ Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // ✅ Dynamic backend URL (works local + production)
+  const API_BASE =
+    import.meta.env.MODE === "development"
+      ? "http://localhost:3001"
+      : "https://mrskipbags-backend.onrender.com"; // <-- your Render backend URL
+
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     console.log("📤 Submitting data:", formData);
+
     try {
-      const res = await fetch("http://localhost:3001/api/enquiry", {
+      const res = await fetch(`${API_BASE}/api/enquiry`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      console.log("📨 Response status:", res.status);
+
       const data = await res.json();
-      console.log("📨 Response data:", data);
+      console.log("📨 Response status:", res.status, data);
+
       if (res.ok) {
-        navigate("/success");
-        console.log("Server response:", data);
+        navigate("/success"); // ✅ redirect to success page
+        console.log("✅ Enquiry sent successfully");
       } else {
         alert("❌ Failed to send enquiry. Please try again.");
-        console.error("Error:", data);
       }
     } catch (err) {
       console.error("Request failed:", err);
-      alert("⚠️ Could not connect to server.");
+      alert("⚠️ Could not connect to the server.");
     }
   };
-   
+
   const total = (formData.price * formData.qty).toFixed(2);
+
+  // ✅ UI
   return (
     <section className="min-h-[80vh] bg-gray-50 py-12 px-4">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         
-        {/* 1. Customer Info */}
+        {/* 🧾 Customer Info */}
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-lg p-6 space-y-4 md:col-span-2"
         >
-          <h2 className="text-2xl font-bold text-green-700 mb-4">Order Information</h2>
+          <h2 className="text-2xl font-bold text-green-700 mb-4">
+            Order Information
+          </h2>
 
           {/* Section 1 */}
-          <h3 className="text-lg font-semibold text-blue-800">1. Your Information</h3>
+          <h3 className="text-lg font-semibold text-blue-800">
+            1. Your Information
+          </h3>
+
           <input
             type="text"
             name="name"
@@ -71,6 +85,7 @@ export default function CollectionForm() {
             value={formData.name}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
+            required
           />
           <input
             type="text"
@@ -79,6 +94,7 @@ export default function CollectionForm() {
             value={formData.address1}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
+            required
           />
           <input
             type="text"
@@ -103,6 +119,7 @@ export default function CollectionForm() {
             value={formData.mobile}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
+            required
           />
           <input
             type="email"
@@ -111,16 +128,21 @@ export default function CollectionForm() {
             value={formData.email}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
+            required
           />
 
           {/* Section 2 */}
-          <h3 className="text-lg font-semibold text-blue-800 mt-6">2. Collection Details</h3>
+          <h3 className="text-lg font-semibold text-blue-800 mt-6">
+            2. Collection Details
+          </h3>
+
           <input
             type="date"
             name="collectionDate"
             value={formData.collectionDate}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
+            required
           />
           <textarea
             name="notes"
@@ -138,9 +160,11 @@ export default function CollectionForm() {
           </button>
         </form>
 
-        {/* 3. Sidebar */}
+        {/* 🛠️ Sidebar */}
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-800 mb-4">3. Your Baby Skip</h3>
+          <h3 className="text-lg font-semibold text-blue-800 mb-4">
+            3. Your Baby Skip
+          </h3>
           <img
             src="https://dummyimage.com/300x200/27ae60/ffffff&text=Skip+Bag"
             alt="Skip Bag"
