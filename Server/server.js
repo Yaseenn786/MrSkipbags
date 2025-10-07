@@ -1,50 +1,67 @@
 import express from "express";
+import cors from "cors";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
-
-// ✅ Dynamic Port (Render provides PORT automatically)
 const PORT = process.env.PORT || 3001;
 
-// ✅ Middleware
-app.use((req, res, next) => {
-    console.log("CORS middleware triggered for", req.method, req.originalUrl);
-    const allowed = [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:5175",
-      "https://mrskipbags.ie",
-      "https://www.mrskipbags.ie",
-    ];
-    const origin = req.headers.origin;
-    if (allowed.includes(origin)) {
-      res.setHeader("Access-Control-Allow-Origin", origin);
-    }
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-  
-    if (req.method === "OPTIONS") {
-      return res.status(200).send("OK");
-    }
-    next();
-  });
-  
-  app.use(express.json());
+/**
+ * CORS config - must be registered BEFORE body parsers & routes
+ * - In dev it allows localhost ports
+ * - In prod it explicitly allows your site origin(s)
+ * - app.options('*', ...) ensures preflight responses are handled
+ */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "https://mrskipbags.ie",
+  "https://www.mrskipbags.ie",
+  // add Netlify preview domain(s) if needed
+];
 
-// ✅ Health Check Route
+// Use cors middleware: dynamic origin resolver
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      // optionally allow everything in DEV by uncommenting next line:
+      // if (process.env.NODE_ENV !== "production") return callback(null, true);
+      return callback(new Error("CORS not allowed"), false);
+    },
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
+
+// make sure preflight is explicitly handled
+app.options(/.*/, (req, res) => {
+  console.log("CORS preflight handled for:", req.headers.origin, req.path);
+  res.sendStatus(204);
+});
+
+// Body parser after CORS
+app.use(express.json());
+
+// Simple health check
 app.get("/api/health", (_, res) =>
   res.json({
-    status: "✅ Backend is alive",
+    status: "ok",
     env: process.env.NODE_ENV || "development",
     time: new Date().toISOString(),
   })
 );
 
-// ✅ Enquiry API (sends to business + auto-reply to customer)
+// Enquiry route — sends to business inbox + auto-reply
 app.post("/api/enquiry", async (req, res) => {
+  console.log("POST /api/enquiry from origin:", req.headers.origin);
   const {
     name,
     address1,
@@ -56,17 +73,15 @@ app.post("/api/enquiry", async (req, res) => {
     notes,
     bagType,
     qty,
-  } = req.body;
+  } = req.body || {};
 
   if (!name || !email || !mobile) {
-    return res.status(400).json({
-      success: false,
-      message: "Name, Email, and Mobile are required",
-    });
+    return res
+      .status(400)
+      .json({ success: false, message: "Name, Email & Mobile are required" });
   }
 
   try {
-    // 📧 Mail Transport
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -77,7 +92,7 @@ app.post("/api/enquiry", async (req, res) => {
       },
     });
 
-    // 📥 Send enquiry to your inbox
+    // send to business
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: process.env.MAIL_TO || process.env.MAIL_USER,
@@ -96,46 +111,40 @@ app.post("/api/enquiry", async (req, res) => {
       `,
     });
 
-    // 📤 Auto-reply to customer
+    // auto-reply to customer
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: email,
       subject: "🟢 Thank You for Your Enquiry – Mr Skip Bags",
       html: `
-        <div style="font-family:Arial, sans-serif; max-width:600px; margin:auto; padding:20px; border:1px solid #e5e5e5; border-radius:10px;">
-          <div style="background:linear-gradient(to right, #166534, #16a34a); color:white; padding:12px 20px; border-radius:8px 8px 0 0;">
+        <div style="font-family:Arial, sans-serif; max-width:600px; margin:auto; padding:20px;">
+          <div style="background:linear-gradient(to right, #166534, #16a34a); color:white; padding:12px;">
             <h2 style="margin:0;">Mr Skip Bags</h2>
           </div>
-          <div style="padding:20px;">
+          <div style="padding:16px;">
             <h3 style="color:#166534;">Thank You, ${name}!</h3>
             <p>We’ve received your enquiry for skip bag collection. Our team will be in touch soon to confirm your collection details.</p>
-            <br/>
-            <p>Kind regards,</p>
-            <p><b>The Mr Skip Bags Team</b></p>
-            <hr/>
-            <p style="font-size:12px;color:#777;">📍 Dublin, Ireland | 🌐 www.mrskipbags.ie</p>
+            <p>Kind regards,<br/>The Mr Skip Bags Team</p>
           </div>
         </div>
       `,
     });
 
-    console.log("✅ Enquiry + Auto-reply emails sent.");
-    res.status(200).json({
-      success: true,
-      message: "Enquiry and auto-reply sent successfully!",
-    });
+    console.log("Emails sent successfully");
+    return res
+      .status(200)
+      .json({ success: true, message: "Enquiry and auto-reply sent." });
   } catch (err) {
-    console.error("❌ Mail error:", err);
-    res.status(500).json({
-      success: false,
-      message: "Failed to send emails. Please try again later.",
-    });
+    console.error("Mail send error:", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to send emails." });
   }
 });
 
-// 🧠 Fallback route
-app.get("/", (_, res) => res.send("Mr Skip Bags backend running 🟢"));
+// fallback
+app.get("/", (_, res) => res.send("Mr Skip Bags backend running"));
 
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT} | CORS + Mail ready ✅`)
-);
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT} | NODE_ENV=${process.env.NODE_ENV}`);
+});

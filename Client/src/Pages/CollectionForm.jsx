@@ -28,7 +28,7 @@ export default function CollectionForm() {
   const API_BASE =
     import.meta.env.MODE === "development"
       ? "http://localhost:3001"
-      : "https://mrskipbags-backend.onrender.com"; // <-- your Render backend URL
+      : "https://mrskipbags.onrender.com"; // <-- your Render backend URL
 
   // ✅ Handle form submission
   const handleSubmit = async (e) => {
