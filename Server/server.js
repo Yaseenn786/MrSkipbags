@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import serverless from "serverless-http"; // ✅ Add this for Vercel
 
 dotenv.config();
 const app = express();
@@ -9,9 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 /**
  * CORS config - must be registered BEFORE body parsers & routes
- * - In dev it allows localhost ports
- * - In prod it explicitly allows your site origin(s)
- * - app.options('*', ...) ensures preflight responses are handled
+ * Works for both localhost + live domains (Netlify / Vercel)
  */
 const allowedOrigins = [
   "http://localhost:5173",
@@ -19,18 +18,13 @@ const allowedOrigins = [
   "http://localhost:5175",
   "https://mrskipbags.ie",
   "https://www.mrskipbags.ie",
-  // add Netlify preview domain(s) if needed
 ];
 
-// Use cors middleware: dynamic origin resolver
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow requests with no origin (mobile apps, curl, server-to-server)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
-      // optionally allow everything in DEV by uncommenting next line:
-      // if (process.env.NODE_ENV !== "production") return callback(null, true);
       return callback(new Error("CORS not allowed"), false);
     },
     methods: ["GET", "POST", "OPTIONS"],
@@ -41,16 +35,15 @@ app.use(
   })
 );
 
-// make sure preflight is explicitly handled
+// handle preflight explicitly
 app.options(/.*/, (req, res) => {
   console.log("CORS preflight handled for:", req.headers.origin, req.path);
   res.sendStatus(204);
 });
 
-// Body parser after CORS
 app.use(express.json());
 
-// Simple health check
+// ✅ Health check
 app.get("/api/health", (_, res) =>
   res.json({
     status: "ok",
@@ -59,7 +52,7 @@ app.get("/api/health", (_, res) =>
   })
 );
 
-// Enquiry route — sends to business inbox + auto-reply
+// ✅ Enquiry route — sends to business inbox + auto-reply
 app.post("/api/enquiry", async (req, res) => {
   console.log("POST /api/enquiry from origin:", req.headers.origin);
   const {
@@ -83,14 +76,14 @@ app.post("/api/enquiry", async (req, res) => {
 
   try {
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+      service: "gmail",
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
     });
 
-    // send to business
+    // Send to business inbox
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: process.env.MAIL_TO || process.env.MAIL_USER,
@@ -109,7 +102,7 @@ app.post("/api/enquiry", async (req, res) => {
       `,
     });
 
-    // auto-reply to customer
+    // Auto-reply to customer
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: email,
@@ -128,21 +121,27 @@ app.post("/api/enquiry", async (req, res) => {
       `,
     });
 
-    console.log("Emails sent successfully");
+    console.log("✅ Emails sent successfully");
     return res
       .status(200)
       .json({ success: true, message: "Enquiry and auto-reply sent." });
   } catch (err) {
-    console.error("Mail send error:", err);
+    console.error("❌ Mail send error:", err);
     return res
       .status(500)
       .json({ success: false, message: "Failed to send emails." });
   }
 });
 
-// fallback
-app.get("/", (_, res) => res.send("Mr Skip Bags backend running"));
+// ✅ fallback
+app.get("/", (_, res) => res.send("Mr Skip Bags backend running ✅"));
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT} | NODE_ENV=${process.env.NODE_ENV}`);
-});
+// ✅ For Vercel: export as serverless handler
+export const handler = serverless(app);
+
+// ✅ For Localhost: normal server run
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`🟢 Server listening on port ${PORT} (LOCAL DEV)`);
+  });
+}
