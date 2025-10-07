@@ -11,38 +11,46 @@ const PORT = process.env.PORT || 3001;
 // ✅ Middleware
 app.use(express.json());
 
-// ✅ CORS setup (supports both localhost + live domain)
+// ✅ CORS (works for both localhost + live domains + preflight)
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
   "https://mrskipbags.ie",
   "https://www.mrskipbags.ie",
+  "https://mrskipbags.netlify.app", // optional if Netlify preview is used
 ];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Origin", origin);
   } else {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "https://mrskipbags.ie"); // fallback
   }
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  if (req.method === "OPTIONS") return res.sendStatus(200);
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  // ✅ Handle preflight request early
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 
-// ✅ Health Check
+// ✅ Health Check Route
 app.get("/api/health", (_, res) =>
   res.json({
     status: "✅ Backend is alive",
-    environment: process.env.NODE_ENV || "development",
+    env: process.env.NODE_ENV || "development",
     time: new Date().toISOString(),
   })
 );
 
-// ✅ Enquiry API (sends both: to business + auto-reply to customer)
+// ✅ Enquiry API (sends to business + auto-reply to customer)
 app.post("/api/enquiry", async (req, res) => {
   const {
     name,
@@ -57,12 +65,15 @@ app.post("/api/enquiry", async (req, res) => {
     qty,
   } = req.body;
 
-  if (!name || !email || !mobile)
-    return res
-      .status(400)
-      .json({ success: false, message: "Name, Email & Mobile are required" });
+  if (!name || !email || !mobile) {
+    return res.status(400).json({
+      success: false,
+      message: "Name, Email, and Mobile are required",
+    });
+  }
 
   try {
+    // 📧 Mail Transport
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -73,7 +84,7 @@ app.post("/api/enquiry", async (req, res) => {
       },
     });
 
-    // 📩 1. Send full enquiry to your business inbox
+    // 📥 Send enquiry to your inbox
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: process.env.MAIL_TO || process.env.MAIL_USER,
@@ -92,7 +103,7 @@ app.post("/api/enquiry", async (req, res) => {
       `,
     });
 
-    // 📧 2. Auto-reply to the customer
+    // 📤 Auto-reply to customer
     await transporter.sendMail({
       from: `"Mr Skip Bags" <${process.env.MAIL_USER}>`,
       to: email,
@@ -105,7 +116,6 @@ app.post("/api/enquiry", async (req, res) => {
           <div style="padding:20px;">
             <h3 style="color:#166534;">Thank You, ${name}!</h3>
             <p>We’ve received your enquiry for skip bag collection. Our team will be in touch soon to confirm your collection details.</p>
-            
             <br/>
             <p>Kind regards,</p>
             <p><b>The Mr Skip Bags Team</b></p>
@@ -117,12 +127,16 @@ app.post("/api/enquiry", async (req, res) => {
     });
 
     console.log("✅ Enquiry + Auto-reply emails sent.");
-    res
-      .status(200)
-      .json({ success: true, message: "Enquiry and auto-reply sent successfully!" });
+    res.status(200).json({
+      success: true,
+      message: "Enquiry and auto-reply sent successfully!",
+    });
   } catch (err) {
-    console.error("❌ Mail error:", err.message);
-    res.status(500).json({ success: false, message: "Failed to send emails" });
+    console.error("❌ Mail error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to send emails. Please try again later.",
+    });
   }
 });
 
@@ -130,5 +144,5 @@ app.post("/api/enquiry", async (req, res) => {
 app.get("/", (_, res) => res.send("Mr Skip Bags backend running 🟢"));
 
 app.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT} | CORS + Mail ready`)
+  console.log(`🚀 Server running on port ${PORT} | CORS + Mail ready ✅`)
 );
