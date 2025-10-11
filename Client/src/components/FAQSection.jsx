@@ -5,21 +5,18 @@ export default function FAQSection() {
 
   const faqs = [
     {
-      question: "Where can I purchase your bags?",
-      answer: "You can purchase our BabySkip bags online through our website or at local hardware stores including Woodies, B&Q, HomeBase, Heiton Buckley, and other participating retailers across Ireland."
+      question: "What type of bags do you collect?",
+      answer: "We collect all types of skip bags and builder’s bags, including competitor bags. No matter where you bought it, if it’s full — we’ll take it away."
     },
     {
-      question: "I have overfilled my bag. Can you still lift it?",
-      answer: "For safety reasons, we cannot collect overfilled bags. The bag should not exceed its maximum fill line. Overfilled bags can tear during collection, creating hazards. Please remove excess waste before scheduling collection."
+      question: "How do I book a collection?",
+      answer: "Simply book online through our website or call us directly. Choose your bag size, enter your details, and we’ll schedule your collection at a time that suits you."
     },
     {
-      question: "Can you lift over a wall or fence?",
-      answer: "Our trucks require clear access to collect your bag. We need at least 2 meters of clearance above the bag and direct access from the road. If there are obstacles like walls or fences, please contact us beforehand to discuss your specific situation."
+      question: "What can I put in the bag?",
+      answer: "You can fill your bag with household, garden, or DIY waste — like wood, soil, rubble, or general rubbish.🚫 Please avoid hazardous materials, liquids, or electrical items."
     },
-    {
-      question: "Can we collect from a back alley or barrow lane?",
-      answer: "Yes, we can collect from back lanes and alleys provided our collection vehicle can safely access the location. The lane should be wide enough for our truck and free of obstructions. Please ensure the bag is visible and accessible from the lane."
-    }
+    
   ];
 
   const toggleFAQ = (index) => {

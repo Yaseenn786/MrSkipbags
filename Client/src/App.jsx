@@ -5,6 +5,7 @@ import About from "./Pages/AboutUs"
 import Area from "./Pages/SelectArea"
 import Form from "./Pages/CollectionForm"
 import Success from "./components/SuccessScreen"
+import Contact from "./components/ContactForm"
 import SkipHire from "./Pages/SkipHire";
 import Footer from "./components/Footer";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/About-us" element={<About />} /> 
         <Route path="/success" element={<Success />} />
         <Route path="/Area" element={<Area />} />
+        <Route path="/Contact" element={<Contact />} />
         <Route path="/Form" element={<Form />} />
       </Routes>
       <Footer />

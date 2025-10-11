@@ -2,6 +2,7 @@ import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slide
 import FocusSection from "../components/FocusSection";
 import HowItWorks from "../components/HowItWorks";
 import Collection from "../components/CollectionArea";
+import Collect from "../components/CollectSkipBags"
 import FAQ from "../components/FAQSection";
 import ReviewsMap from "../components/ReviewsMap";
 import TalkToUs from "../components/TalkToUs";
@@ -10,33 +11,65 @@ import truck from "../assets/back.png";
 export default function Home() {
   return (
     <main className="bg-gray-50">
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src={truck} 
-            alt="Mr Skip Bags Professional Collection Service"
-            className="w-full h-full object-cover"
-          />
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
+   <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+  {/* Background Image */}
+  <div className="absolute inset-0 z-0">
+    <img
+      src={truck}
+      alt="Mr Skip Bags Truck Collection"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-black/35"></div>
+  </div>
 
-        {/* Price Sticker */}
-        <div className="absolute top-32 left-72 z-20 bg-white rounded-2xl shadow-2xl px-8 py-6 border-2 border-green-500 transform scale-125">
-          <div className="text-center">
-            <div className="text-lg text-gray-600 font-semibold">FROM ONLY</div>
-            <div className="text-5xl font-bold text-green-600">€89</div>
-            <div className="text-sm text-gray-500 font-medium">FOR COLLECTION</div>
-          </div>
-        </div>
+  {/* Main Content */}
+  <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-full max-w-7xl px-6 md:px-10 mx-auto text-white">
+    
+    {/* Left Text Section */}
+    <div className="md:w-1/2 space-y-6 text-center md:text-left">
+      <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+        Skip the Hassle with Mr{" "}
+        <span className="text-lime-400">Skip Bags</span>
+      </h1>
 
-        
-      </section>
+      <div className="mt-6 flex justify-center md:justify-start">
+        <a
+          href="/Area"
+          className="bg-lime-400 text-green-900 font-bold px-8 py-4 rounded-xl shadow-lg hover:bg-lime-300 hover:scale-105 transition-all duration-300"
+        >
+          Book Collection Now
+        </a>
+      </div>
+
+      {/* ✅ Sticker for Mobile */}
+      <div className="md:hidden mt-8 flex justify-center">
+        <div className="bg-white rounded-2xl shadow-2xl px-8 py-6 border-2 border-green-500 text-center text-gray-700">
+          <div className="text-xl font-semibold">Collection Starts</div>
+          <div className="text-lg font-medium text-gray-500">From</div>
+          <div className="text-5xl font-bold text-green-600 mt-2">€89</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* ✅ Sticker for Desktop */}
+  <div className="hidden md:block absolute right-[12%] top-[22%] lg:right-[15%] lg:top-[25%] z-20">
+    <div className="bg-white rounded-2xl shadow-2xl px-8 py-6 border-2 border-green-500 text-center text-gray-700">
+      <div className="text-xl font-semibold">Collection Starts</div>
+      <div className="text-lg font-medium text-gray-500">From</div>
+      <div className="text-5xl font-bold text-green-600 mt-2">€89</div>
+    </div>
+  </div>
+</section>
+
+
+
+
 
       <HowItWorks />
-      <Collection />
-      <ReviewsMap /> 
+      <Collect />
+      
+      
       <FAQ />
       <TalkToUs />
     </main>

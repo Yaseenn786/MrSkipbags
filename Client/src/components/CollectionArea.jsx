@@ -1,6 +1,6 @@
 export default function CollectionArea() {
     return (
-      <section className="bg-green-600 py-16 px-6">
+      <section className="bg-green-900 py-16 px-6">
         <div className="container mx-auto max-w-4xl">
           {/* Section Title */}
           <h2 className="text-4xl font-bold text-center text-white mb-8">
