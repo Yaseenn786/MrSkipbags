@@ -13,9 +13,11 @@ export default function Footer() {
           <p className="mb-4 text-gray-400">
             Book your collection today and let Mr Skip Bags handle the heavy lifting.
           </p>
-          <button className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg shadow-md transition">
+          <a
+          href="/Area"
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg shadow-md transition">
             Schedule a Collection
-          </button>
+          </a>
           <p className="mt-4 text-lg font-semibold text-green-400">
             📞 (01) 234 5678
           </p>

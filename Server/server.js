@@ -137,7 +137,8 @@ app.post("/api/enquiry", async (req, res) => {
 app.get("/", (_, res) => res.send("Mr Skip Bags backend running ✅"));
 
 // ✅ For Vercel: export as serverless handler
-export const handler = serverless(app);
+export default serverless(app);
+
 
 // ✅ For Localhost: normal server run
 if (process.env.NODE_ENV !== "production") {
