@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import serverless from "serverless-http"; // ✅ Add this for Vercel
+// import serverless from "serverless-http"; // ✅ Add this for Vercel
 
 dotenv.config();
 const app = express();
@@ -137,11 +137,11 @@ app.post("/api/enquiry", async (req, res) => {
 app.get("/", (_, res) => res.send("Mr Skip Bags backend running ✅"));
 
 // ✅ For Vercel: export as serverless handler
-export default serverless(app);
+export default app;
 
 
 // ✅ For Localhost: normal server run
-if (process.env.NODE_ENV !== "production") {
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🟢 Server listening on port ${PORT} (LOCAL DEV)`);
   });
