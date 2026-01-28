@@ -6,7 +6,7 @@
 body {
   @apply bg-white text-gray-800 font-sans;
 }
-@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+/* @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
   .backdrop-blur-xl,
   .backdrop-blur-sm,
   .backdrop-blur-md {
@@ -14,10 +14,10 @@ body {
     backdrop-filter: none !important;
     background-color: rgba(0, 0, 0, 0.85) !important;
   }
-}
+} */
 
 /* Force GPU acceleration */
-* {
+/* * {
   -webkit-transform: translateZ(0);
   -webkit-backface-visibility: hidden;
-}
+} */
