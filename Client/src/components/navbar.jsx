@@ -43,7 +43,7 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 bg-[#111827] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 bg-[#276843] transition-all duration-300 ${
           isScrolled ? "shadow-lg shadow-black/20 py-3" : "py-4"
         }`}
       >

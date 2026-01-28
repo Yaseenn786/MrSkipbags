@@ -144,7 +144,7 @@ export default function Home() {
                     </div>
                     
                     <div className="flex items-baseline gap-1">
-                      <span className="text-6xl font-bold text-gray-900">€89</span>
+                      <span className="text-6xl font-bold text-green-700">€89</span>
                     </div>
 
                     <ul className="space-y-3 pt-4 border-t border-gray-100">
